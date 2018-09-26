@@ -17,6 +17,10 @@ func init() {
 	for i := 0; i < *concurrentRequest; i++ {
 		go func() {
 			for event := range events {
+				if !event.isValid() {
+					log.Printf("invalid payload: %+v", event)
+					continue
+				}
 				pushEvent(&event)
 			}
 		}()
@@ -35,7 +39,11 @@ func handlerPostEvent(ctx iris.Context) {
 }
 
 func pushEvent(event *Event) {
-	req, err := http.NewRequest(http.MethodPost, *reactkApi, bytes.NewBuffer(event.getPushBody()))
+	b := event.getPushBody()
+	if b == nil {
+		log.Printf("fail to get body")
+	}
+	req, err := http.NewRequest(http.MethodPost, *reactkApi, bytes.NewBuffer(b))
 	if err != nil {
 		log.Printf("fail to prepare request for event %+v: %s", event, err.Error())
 		return

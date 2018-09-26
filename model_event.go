@@ -16,8 +16,10 @@ type PushEvent struct {
 }
 
 type Event struct {
-	ConfigId string                 `json:"config_id"`
-	Payload  map[string]interface{} `json:"data"`
+	ConfigId  string                 `json:"config_id"`
+	EventType string                 `json:"event_type"`
+	Payload   map[string]interface{} `json:"data"`
+	SentDate  string                 `json:"sent_date"`
 }
 
 func (e *Event) getPushBody() []byte {
@@ -38,20 +40,21 @@ func (e *Event) getPushBody() []byte {
 }
 
 func (e *Event) getDay() string {
-	if d, ok := e.Payload["created_date"]; ok && len(d.(string)) >= 10 {
-		return d.(string)[:10]
+	if len(e.SentDate) >= 10 {
+		return e.SentDate[:10]
 	}
 	return ""
 }
 
 func (e *Event) getCreatedDate() string {
-	if d, ok := e.Payload["created_date"]; ok {
-		return d.(string)
-	}
-	return ""
+	return e.SentDate
 }
 
 func (e *Event) getType() string {
+	return e.EventType
+}
+
+func (e *Event) getPayloadType() string {
 	if d, ok := e.Payload["type"]; ok {
 		return d.(string)
 	}
@@ -59,7 +62,7 @@ func (e *Event) getType() string {
 }
 
 func (e *Event) getUID() string {
-	if e.getType() == "User" {
+	if e.getPayloadType() == "User" {
 		if d, ok := e.Payload["id_str"]; ok {
 			return d.(string)
 		}
@@ -76,4 +79,8 @@ func (e *Event) getUID() string {
 
 func (e *Event) getClientId() string {
 	return fmt.Sprintf("msa_%s", e.ConfigId)
+}
+
+func (e *Event) isValid() bool {
+	return e.ConfigId != "" && e.getUID() != "" && e.getType() != "" && e.getDay() != ""
 }

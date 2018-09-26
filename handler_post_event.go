@@ -40,6 +40,7 @@ func pushEvent(event *Event) {
 		log.Printf("fail to prepare request for event %+v: %s", event, err.Error())
 		return
 	}
+	req.Header.Set("Content-Type", "application/json")
 	resp, err := httpClient.Do(req)
 	if err != nil {
 		log.Printf("fail to push event %s: %s", event, err.Error())

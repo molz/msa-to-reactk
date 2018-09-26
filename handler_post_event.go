@@ -29,7 +29,7 @@ func init() {
 
 func handlerPostEvent(ctx iris.Context) {
 	var event Event
-	_, err := ctx.JSON(&event)
+	err := ctx.ReadJSON(&event)
 	if err != nil {
 		log.Printf("fail to unmarshal json: %s", err.Error())
 		ctx.StatusCode(iris.StatusBadRequest)

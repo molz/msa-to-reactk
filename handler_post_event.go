@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	httpClient = getHttpClient(10, time.Minute)
+	httpClient = getHttpClient(*concurrentRequest, time.Minute)
 	events     = make(chan Event, 10000)
 )
 

@@ -33,6 +33,7 @@ func (e *Event) getPushBody() []byte {
 	}
 	b, err := json.Marshal(pushEvent)
 	if err != nil {
+		failByLabel.WithLabelValues("fail_marshal_push_body").Inc()
 		log.Printf("fail to marshal pushEvent: %s", err.Error())
 		return nil
 	}

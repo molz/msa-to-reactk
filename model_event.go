@@ -48,11 +48,11 @@ func (e *Event) getDay() string {
 	return ""
 }
  const (
- 	timeFormatISO8601 = "2006-01-02 15:04:05.000-0700"
+ 	timeFormatISO8601 = "2006-01-02 15:04:05-0700"
  )
 // output format : 2018-09-25 06:08:32.922+0000
 func (e *Event) getCreatedDate() string {
-	t, err := time.Parse("2018-06-11[T]15:04:05[Z]", e.SentDate)
+	t, err := time.Parse("2006-01-02[T]15:04:05[Z]", e.SentDate)
 	if err != nil {
 		return time.Now().Format(timeFormatISO8601)
 	}
